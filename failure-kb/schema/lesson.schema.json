@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://llis-failure-kb.local/schema/classified-lesson.json",
+  "title": "ClassifiedLLISLesson",
+  "type": "object",
+  "required": [
+    "lesson_number",
+    "primary_agent",
+    "secondary_agents",
+    "failure_patterns",
+    "confidence",
+    "evidence",
+    "impact_severity",
+    "data_quality"
+  ],
+  "properties": {
+    "lesson_number": { "type": "string" },
+    "primary_agent": {
+      "type": "string",
+      "enum": [
+        "hardware_spec_review",
+        "design_safety_review",
+        "code_review",
+        "test_verification_review",
+        "ops_monitoring_bot",
+        "config_change_review",
+        "integration_systems_review",
+        "program_process_bot",
+        "facilities_ground_review"
+      ]
+    },
+    "secondary_agents": {
+      "type": "array",
+      "items": { "$ref": "#/properties/primary_agent" },
+      "maxItems": 3,
+      "uniqueItems": true
+    },
+    "failure_patterns": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "insufficient_monitoring_alerting",
+          "insufficient_review_flagging",
+          "requirements_gap",
+          "configuration_drift",
+          "late_change_bypass",
+          "inadequate_test_verification",
+          "operator_procedure_gap",
+          "complacency_assumed_robustness",
+          "commodity_service_mismatch",
+          "interface_integration_gap",
+          "redundancy_analysis_incomplete",
+          "parts_materials_quality",
+          "software_assurance_gap",
+          "human_factors_ops",
+          "documentation_process_debt",
+          "procurement_supply_chain",
+          "facility_installation_defect",
+          "schedule_pressure_shortcut"
+        ]
+      },
+      "maxItems": 5,
+      "uniqueItems": true
+    },
+    "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["quote", "field", "supports"],
+        "properties": {
+          "quote": { "type": "string", "maxLength": 240 },
+          "field": {
+            "type": "string",
+            "enum": ["title", "abstract_text", "driving_event_text", "lesson_text", "recommendation_text"]
+          },
+          "supports": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1
+          }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 3
+    },
+    "impact_severity": { "type": "string", "enum": ["critical", "major", "minor", "unknown"] },
+    "impact_notes": { "type": "string" },
+    "data_quality": { "type": "string", "enum": ["full", "partial"] },
+    "rule_hints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional keyword-rule bootstrap hints applied before LLM classification"
+    }
+  },
+  "additionalProperties": false
+}

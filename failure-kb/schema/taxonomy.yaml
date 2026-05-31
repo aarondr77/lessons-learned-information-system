@@ -1,0 +1,160 @@
+version: "1.0"
+description: >
+  Two-layer taxonomy for NASA LLIS failure knowledge base.
+  Derived from corpus analysis of 2126 lessons (see docs/corpus_analysis.md).
+
+constraints:
+  max_secondary_agents: 3
+  max_failure_patterns: 5
+  max_evidence_quotes: 3
+  max_evidence_chars: 240
+  primary_agent_rule: >
+    Earliest lifecycle stage where intervention would have prevented the incident.
+
+agents:
+  hardware_spec_review:
+    label: Hardware Specification Review
+    description: >
+      Mechanical, structural, materials, parts design inadequacy, wrong service
+      conditions, or redundancy architecture at the hardware level.
+    keywords: [structural, material, weld, fatigue, mechanical, hardware, part]
+
+  design_safety_review:
+    label: Design Safety Review
+    description: >
+      PHA, hazard analysis, safety review, or failure of imagination during
+      the design phase.
+    keywords: [pha, hazard analysis, safety review, mishap, hazard]
+
+  code_review:
+    label: Code Review
+    description: >
+      Software, firmware, embedded logic, IV&V, simulation, requirements and
+      traceability for software systems.
+    keywords: [software, firmware, code, iv&v, simulation, algorithm]
+
+  test_verification_review:
+    label: Test and Verification Review
+    description: >
+      Test planning, environmental test, verification sell-off, inadequate
+      test coverage or unrepresentative test conditions.
+    keywords: [test, verification, validation, qualification, acceptance]
+
+  ops_monitoring_bot:
+    label: Operations and Monitoring
+    description: >
+      Operator procedures, monitoring and inspection cadence, real-time
+      operations, complacency, or missed operational checks.
+    keywords: [operator, procedure, monitoring, inspection, maintenance, ops]
+
+  config_change_review:
+    label: Configuration Change Review
+    description: >
+      Configuration management, late-stage changes, drawing or process bypass,
+      as-built drift from intended design.
+    keywords: [configuration, config change, drawing, baseline, as-built]
+
+  integration_systems_review:
+    label: Integration and Systems Review
+    description: >
+      Interface, redundancy, or end-to-end analysis gaps across subsystem
+      boundaries.
+    keywords: [interface, integration, subsystem, end-to-end, compatibility]
+
+  program_process_bot:
+    label: Program and Process
+    description: >
+      Program management, documentation backlog, procurement, IT/licensing,
+      contractor communications, schedule pressure on process.
+    keywords: [procurement, contract, schedule, documentation, license, backlog]
+
+  facilities_ground_review:
+    label: Facilities and Ground Systems
+    description: >
+      Facilities, ground support equipment, piping, pumps, HVAC, and
+      infrastructure installation or maintenance defects.
+    keywords: [facility, ground support, piping, pump, hvac, infrastructure]
+
+failure_patterns:
+  insufficient_monitoring_alerting:
+    label: Insufficient Monitoring or Alerting
+    description: Missed condition that inspection, monitoring, or alarms should catch.
+
+  insufficient_review_flagging:
+    label: Insufficient Review Flagging
+    description: Design, safety, PHA, or board review did not surface the hazard.
+
+  requirements_gap:
+    label: Requirements Gap
+    description: Requirements incomplete, at wrong level, or not verified.
+
+  configuration_drift:
+    label: Configuration Drift
+    description: As-built or operational config differs from intended; inactive system not tracked.
+
+  late_change_bypass:
+    label: Late Change Bypass
+    description: Change bypassed proper review via fast-track or engineering order.
+
+  inadequate_test_verification:
+    label: Inadequate Test or Verification
+    description: Test, environmental, or analysis conditions not representative of operations.
+
+  operator_procedure_gap:
+    label: Operator Procedure Gap
+    description: DOP or procedure missing constraints or unclear operational limits.
+
+  complacency_assumed_robustness:
+    label: Complacency or Assumed Robustness
+    description: Always worked mindset or identity mismatch leading to unchecked assumptions.
+
+  commodity_service_mismatch:
+    label: Commodity or Service Mismatch
+    description: System designed for one commodity or service but operated with another.
+
+  interface_integration_gap:
+    label: Interface or Integration Gap
+    description: Subsystem boundary or interface not adequately analyzed.
+
+  redundancy_analysis_incomplete:
+    label: Redundancy Analysis Incomplete
+    description: Redundancy or failure modes not analyzed end-to-end.
+
+  parts_materials_quality:
+    label: Parts or Materials Quality
+    description: Part defect, material selection, manufacturing, solder, or gauge issue.
+
+  software_assurance_gap:
+    label: Software Assurance Gap
+    description: Software stability, fault tolerance, or traceability deficiency.
+
+  human_factors_ops:
+    label: Human Factors in Operations
+    description: Training, labeling, panel mis-identification, or human error enablers.
+
+  documentation_process_debt:
+    label: Documentation or Process Debt
+    description: Backlog, licensing, or knowledge not distributed to operators.
+
+  procurement_supply_chain:
+    label: Procurement or Supply Chain
+    description: Parts specification, contaminants, or supplier variability issue.
+
+  facility_installation_defect:
+    label: Facility Installation Defect
+    description: Install or maintenance defect in facility infrastructure.
+
+  schedule_pressure_shortcut:
+    label: Schedule Pressure Shortcut
+    description: Schedule pressure drove skipped steps or abbreviated reviews.
+
+impact_severity:
+  values: [critical, major, minor, unknown]
+  descriptions:
+    critical: Fatality, catastrophic loss, major mission failure, or major safety event.
+    major: Significant schedule slip, major hardware damage, or costly rework stated.
+    minor: Limited impact, near-miss, or minor rework with no major consequences stated.
+    unknown: Impact not described or unclear from lesson text.
+
+confidence:
+  values: [high, medium, low]
