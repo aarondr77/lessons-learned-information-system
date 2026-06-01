@@ -8,7 +8,7 @@ Agent-oriented knowledge base built from NASA Lessons Learned Information System
 2. **Analyze** — `python failure-kb/scripts/analyze_corpus.py`
 3. **Classify** — `python failure-kb/scripts/classify_lessons.py --resume`
 4. **Build KB** — `python failure-kb/scripts/build_knowledge_base.py`
-5. **Explore** — `streamlit run failure-kb/explorer/app.py`
+5. **Explore** — `python failure-kb/explorer/app.py` (Dash UI at http://127.0.0.1:8050)
 
 ## Setup
 
@@ -37,6 +37,23 @@ Derived from corpus analysis in [`docs/corpus_analysis.md`](docs/corpus_analysis
 | `data/llis/classified_lessons.jsonl` | LLM classification output |
 | `data/llis/knowledge_base.jsonl` | Merged raw + classified |
 | `agents/*/corpus.jsonl` | Per-agent training slices |
+
+## Explorer (Dash)
+
+Interactive dashboard at `failure-kb/explorer/`:
+
+| Tab | Features |
+| --- | --- |
+| **Dashboard** | KPI cards, agent/pattern/org charts, timeline |
+| **Top issues** | Pattern frequency, pattern×agent heatmap, high-impact list |
+| **Browse lessons** | Filterable table, lesson detail panel, CSV export |
+
+```bash
+python failure-kb/explorer/app.py
+# open http://127.0.0.1:8050
+```
+
+Works on raw data before classification (with a warning banner). Full analytics appear after `build_knowledge_base.py`.
 
 ## Validation
 
