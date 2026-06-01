@@ -18,7 +18,7 @@ source .venv/bin/activate
 pip install -r failure-kb/requirements.txt
 ```
 
-Add `ANTHROPIC_API_KEY` to workspace root `.env`.
+Add `ANTHROPIC_API_KEY` to workspace root `.env`. Classification uses **Claude Haiku 4.5** (`claude-haiku-4-5-20251001`) by default; override with `ANTHROPIC_MODEL` in `.env`.
 
 ## Taxonomy
 
