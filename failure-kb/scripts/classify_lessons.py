@@ -206,6 +206,21 @@ def normalize_classification(result: dict, lesson: dict, taxonomy: dict, schema:
     return result
 
 
+def parse_llm_json(text: str) -> dict:
+    text = text.strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```(?:json)?\s*", "", text)
+        text = re.sub(r"\s*```\s*$", "", text, flags=re.MULTILINE).strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        start = text.find("{")
+        if start < 0:
+            raise
+        result, _ = json.JSONDecoder().raw_decode(text[start:])
+        return result
+
+
 def classify_lesson(
     client: Anthropic,
     model: str,
@@ -227,10 +242,7 @@ def classify_lesson(
                 messages=[{"role": "user", "content": prompt}],
             )
             text = response.content[0].text.strip()
-            if text.startswith("```"):
-                text = re.sub(r"^```(?:json)?\s*", "", text)
-                text = re.sub(r"\s*```$", "", text)
-            result = json.loads(text)
+            result = parse_llm_json(text)
             if rule_hints:
                 result["rule_hints"] = rule_hints
             result = normalize_classification(result, lesson, taxonomy, schema)
@@ -333,6 +345,7 @@ def main() -> None:
 
     client = Anthropic(api_key=api_key)
     classified = load_jsonl(args.output) if args.resume else []
+    failures: list[str] = []
 
     total = len(lessons)
     for i, lesson in enumerate(lessons, 1):
@@ -341,13 +354,22 @@ def main() -> None:
             continue
         hints = apply_rule_hints(lesson, taxonomy)
         print(f"[{i}/{total}] Classifying {ln}...", file=sys.stderr)
-        result = classify_lesson(client, args.model, lesson, taxonomy, schema, hints)
+        try:
+            result = classify_lesson(client, args.model, lesson, taxonomy, schema, hints)
+        except RuntimeError as exc:
+            print(str(exc), file=sys.stderr)
+            failures.append(ln)
+            continue
         classified.append(result)
         append_jsonl(args.output, result)
         done_ids.add(ln)
         time.sleep(args.delay)
 
     print(f"Classified {len(classified)} lessons total -> {args.output}", file=sys.stderr)
+    if failures:
+        fail_path = args.output.with_name(args.output.stem + ".failures.json")
+        fail_path.write_text(json.dumps(failures, indent=2), encoding="utf-8")
+        print(f"Failed {len(failures)} lesson(s): {', '.join(failures)}", file=sys.stderr)
 
 
 if __name__ == "__main__":
